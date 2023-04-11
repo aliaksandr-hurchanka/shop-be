@@ -15,7 +15,7 @@ const serverlessConfiguration: AWS = {
       cors: {
         allowCredentials: true,
         allowedHeaders: ['Content-Type: application/json', 'Access-Control-Allow-Methods: *', 'Access-Control-Allow-Origin: *'],
-        allowedOrigins: ['https://lse7wqxd9b.execute-api.eu-west-1.amazonaws.com'],
+        allowedOrigins: ['https://dyt92i5dtqcy9.cloudfront.net/'],
         allowedMethods: ['GET', 'POST']
       }
     },
