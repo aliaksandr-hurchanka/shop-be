@@ -1,0 +1,64 @@
+{
+    "products": [
+        {
+            "PutRequest": {
+                "Item": {
+                    "id": { "S": "1" },
+                    "title": { "S": "Yamaha R6 2018" },
+                    "description": { "S": "This is a sportbike for track." },
+                    "price": { "S": "14000" }
+                }
+            }
+        },
+        {
+            "PutRequest": {
+                "Item": {
+                    "id": { "S": "2" },
+                    "title": { "S": "Yamaha R1 2018" },
+                    "description": { "S": "This is a sportbike for track." },
+                    "price": { "S": "16000" }
+                }
+            }
+        },
+        {
+            "PutRequest": {
+                "Item": {
+                    "id": { "S": "3" },
+                    "title": { "S": "Yamaha R6 2020" },
+                    "description": { "S": "This is a sportbike for track." },
+                    "price": { "S": "18000" }
+                }
+            }
+        },
+        {
+            "PutRequest": {
+                "Item": {
+                    "id": { "S": "4" },
+                    "title": { "S": "Yamaha R6 2023" },
+                    "description": { "S": "This is a sportbike for track." },
+                    "price": { "S": "20000" }
+                }
+            }
+        },
+        {
+            "PutRequest": {
+                "Item": {
+                    "id": { "S": "5" },
+                    "title": { "S": "Yamaha R1M" },
+                    "description": { "S": "This is a sportbike for track." },
+                    "price": { "S": "35000" }
+                }
+            }
+        },
+        {
+            "PutRequest": {
+                "Item": {
+                    "id": { "S": "6" },
+                    "title": { "S": "Yamaha R6 2023" },
+                    "description": { "S": "This is a sportbike for track." },
+                    "price": { "S": "22000" }
+                }
+            }
+        }
+    ]
+}

@@ -1,0 +1,60 @@
+{
+    "stock": [
+        {
+            "PutRequest": {
+                "Item": {
+                    "product_id": { "S": "0" },
+                    "count": { "N": "3" }
+                }
+            }
+        },
+        {
+            "PutRequest": {
+                "Item": {
+                    "product_id": { "S": "1" },
+                    "count": { "N": "5" }
+                }
+            }
+        },
+        {
+            "PutRequest": {
+                "Item": {
+                    "product_id": { "S": "2" },
+                    "count": { "N": "1" }
+                }
+            }
+        },
+        {
+            "PutRequest": {
+                "Item": {
+                    "product_id": { "S": "3" },
+                    "count": { "N": "0" }
+                }
+            }
+        },
+        {
+            "PutRequest": {
+                "Item": {
+                    "product_id": { "S": "4" },
+                    "count": { "N": "3" }
+                }
+            }
+        },
+        {
+            "PutRequest": {
+                "Item": {
+                    "product_id": { "S": "5" },
+                    "count": { "N": "7" }
+                }
+            }
+        },
+        {
+            "PutRequest": {
+                "Item": {
+                    "product_id": { "S": "6" },
+                    "count": { "N": "2" }
+                }
+            }
+        }
+    ]
+}
