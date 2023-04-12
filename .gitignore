@@ -1,1 +1,4 @@
 .idea
+# package directories
+node_modules/
+product-service/node_modules/
