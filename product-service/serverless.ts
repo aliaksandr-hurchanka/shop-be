@@ -2,6 +2,8 @@ import type { AWS } from '@serverless/typescript';
 
 import getProductsList from '@functions/getProductsList';
 import getProductById from '@functions/getProductById';
+import catalogBatchProcess from '@functions/catalogBatchProcess';
+import createProduct from '@functions/createProduct';
 
 const serverlessConfiguration: AWS = {
   service: 'product-service',
@@ -26,10 +28,64 @@ const serverlessConfiguration: AWS = {
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
       NODE_OPTIONS: '--enable-source-maps --stack-trace-limit=1000',
+      SNS_TOPIC_CREATE_PRODUCT: { Ref: 'createProductTopic' },
     },
+    iam: {
+      role: {
+        statements: [
+          {
+            Effect: 'Allow',
+            Action: ['dynamodb:*'],
+            Resource: '*',
+          },
+          {
+            Effect: 'Allow',
+            Action: ['sqs:*'],
+            Resource: [
+              {
+                'Fn::GetAtt': ['catalogItemsQueue', 'Arn'],
+              },
+            ],
+          },
+          {
+            Effect: 'Allow',
+            Action: ['sns:*'],
+            Resource: {
+              Ref: 'createProductTopic',
+            },
+          },
+        ]
+      }
+    }
   },
   // import the function via paths
-  functions: { getProductsList, getProductById },
+  functions: { getProductsList, getProductById, catalogBatchProcess, createProduct },
+  resources: {
+    Resources: {
+      catalogItemsQueue: {
+        Type: 'AWS::SQS::Queue',
+        Properties: {
+          QueueName: 'catalogItemsQueue',
+        },
+      },
+      createProductTopic: {
+        Type: 'AWS::SNS::Topic',
+        Properties: {
+          TopicName: 'createProductTopic',
+        },
+      },
+      createProductSubscription: {
+        Type: 'AWS::SNS::Subscription',
+        Properties: {
+          Endpoint: 'aliaksandr_hurchanka@epam.com',
+          Protocol: 'email',
+          TopicArn: {
+            Ref: 'createProductTopic',
+          },
+        },
+      },
+    },
+  },
   package: { individually: true },
   custom: {
     esbuild: {
