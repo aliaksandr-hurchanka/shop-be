@@ -226,7 +226,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/product-service/dev/1682957454172-2023-05-01T16:10:54.172Z/getProductsList.zip"
+          "S3Key": "serverless/product-service/dev/1683655988671-2023-05-09T18:13:08.671Z/getProductsList.zip"
         },
         "Handler": "src/functions/getProductsList/handler.main",
         "Runtime": "nodejs14.x",
@@ -260,7 +260,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/product-service/dev/1682957454172-2023-05-01T16:10:54.172Z/getProductById.zip"
+          "S3Key": "serverless/product-service/dev/1683655988671-2023-05-09T18:13:08.671Z/getProductById.zip"
         },
         "Handler": "src/functions/getProductById/handler.main",
         "Runtime": "nodejs14.x",
@@ -294,7 +294,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/product-service/dev/1682957454172-2023-05-01T16:10:54.172Z/catalogBatchProcess.zip"
+          "S3Key": "serverless/product-service/dev/1683655988671-2023-05-09T18:13:08.671Z/catalogBatchProcess.zip"
         },
         "Handler": "src/functions/catalogBatchProcess/handler.main",
         "Runtime": "nodejs14.x",
@@ -328,7 +328,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/product-service/dev/1682957454172-2023-05-01T16:10:54.172Z/createProduct.zip"
+          "S3Key": "serverless/product-service/dev/1683655988671-2023-05-09T18:13:08.671Z/createProduct.zip"
         },
         "Handler": "src/functions/createProduct/handler.main",
         "Runtime": "nodejs14.x",
@@ -355,16 +355,6 @@
         "CreateProductLogGroup"
       ]
     },
-    "GetProductByIdLambdaVersioncE9hWVQlBvhx3QkgQ9vv1s2XoSTe3HJy547TgaloMo": {
-      "Type": "AWS::Lambda::Version",
-      "DeletionPolicy": "Retain",
-      "Properties": {
-        "FunctionName": {
-          "Ref": "GetProductByIdLambdaFunction"
-        },
-        "CodeSha256": "vyS822IGIJwtJynWin6wb8H6A9zcBfi5NQ0WfrnbnE8="
-      }
-    },
     "CatalogBatchProcessLambdaVersionErVXDct05gj3XW32NmUX9hbYer76dqKwvPuiuc6IISY": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
@@ -373,6 +363,16 @@
           "Ref": "CatalogBatchProcessLambdaFunction"
         },
         "CodeSha256": "RwjrvMkBASdePfdheZLhJhdg6r1htvHVc3XSH7t7fBU="
+      }
+    },
+    "GetProductByIdLambdaVersioncE9hWVQlBvhx3QkgQ9vv1s2XoSTe3HJy547TgaloMo": {
+      "Type": "AWS::Lambda::Version",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "GetProductByIdLambdaFunction"
+        },
+        "CodeSha256": "vyS822IGIJwtJynWin6wb8H6A9zcBfi5NQ0WfrnbnE8="
       }
     },
     "CreateProductLambdaVersionSinMzoJWA2iHiecLCxiOov4pIPDz18KBwgg0mG8cNM": {
@@ -462,7 +462,10 @@
           "Ref": "ApiGatewayRestApi"
         },
         "ApiKeyRequired": false,
-        "AuthorizationType": "NONE",
+        "AuthorizationType": "CUSTOM",
+        "AuthorizerId": {
+          "Ref": "BasicAuthorizerApiGatewayAuthorizer"
+        },
         "Integration": {
           "IntegrationHttpMethod": "POST",
           "Type": "AWS_PROXY",
@@ -493,7 +496,7 @@
         "MethodResponses": []
       },
       "DependsOn": [
-        "GetProductsListLambdaPermissionApiGateway"
+        "BasicAuthorizerApiGatewayAuthorizer"
       ]
     },
     "ApiGatewayMethodProductsProductidVarGet": {
@@ -508,7 +511,10 @@
           "Ref": "ApiGatewayRestApi"
         },
         "ApiKeyRequired": false,
-        "AuthorizationType": "NONE",
+        "AuthorizationType": "CUSTOM",
+        "AuthorizerId": {
+          "Ref": "BasicAuthorizerApiGatewayAuthorizer"
+        },
         "Integration": {
           "IntegrationHttpMethod": "POST",
           "Type": "AWS_PROXY",
@@ -539,7 +545,7 @@
         "MethodResponses": []
       },
       "DependsOn": [
-        "GetProductByIdLambdaPermissionApiGateway"
+        "BasicAuthorizerApiGatewayAuthorizer"
       ]
     },
     "ApiGatewayMethodProductPost": {
@@ -554,7 +560,10 @@
           "Ref": "ApiGatewayRestApi"
         },
         "ApiKeyRequired": false,
-        "AuthorizationType": "NONE",
+        "AuthorizationType": "CUSTOM",
+        "AuthorizerId": {
+          "Ref": "BasicAuthorizerApiGatewayAuthorizer"
+        },
         "Integration": {
           "IntegrationHttpMethod": "POST",
           "Type": "AWS_PROXY",
@@ -585,10 +594,40 @@
         "MethodResponses": []
       },
       "DependsOn": [
-        "CreateProductLambdaPermissionApiGateway"
+        "BasicAuthorizerApiGatewayAuthorizer"
       ]
     },
-    "ApiGatewayDeployment1682957452734": {
+    "BasicAuthorizerApiGatewayAuthorizer": {
+      "Type": "AWS::ApiGateway::Authorizer",
+      "Properties": {
+        "AuthorizerResultTtlInSeconds": 0,
+        "IdentitySource": "method.request.header.Authorization",
+        "Name": "basicAuthorizer",
+        "RestApiId": {
+          "Ref": "ApiGatewayRestApi"
+        },
+        "AuthorizerUri": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition"
+              },
+              ":apigateway:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":lambda:path/2015-03-31/functions/",
+              "arn:aws:lambda:eu-west-1:526744136662:function:authorization-service-dev-basicAuthorizer",
+              "/invocations"
+            ]
+          ]
+        },
+        "Type": "TOKEN"
+      }
+    },
+    "ApiGatewayDeployment1683655986653": {
       "Type": "AWS::ApiGateway::Deployment",
       "Properties": {
         "RestApiId": {
@@ -611,6 +650,38 @@
             "Arn"
           ]
         },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition"
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "/*/*"
+            ]
+          ]
+        }
+      }
+    },
+    "BasicAuthorizerLambdaPermissionApiGateway": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": "arn:aws:lambda:eu-west-1:526744136662:function:authorization-service-dev-basicAuthorizer",
         "Action": "lambda:InvokeFunction",
         "Principal": "apigateway.amazonaws.com",
         "SourceArn": {
@@ -767,15 +838,6 @@
         "Name": "sls-product-service-dev-ServerlessDeploymentBucketName"
       }
     },
-    "GetProductByIdLambdaFunctionQualifiedArn": {
-      "Description": "Current Lambda function version",
-      "Value": {
-        "Ref": "GetProductByIdLambdaVersioncE9hWVQlBvhx3QkgQ9vv1s2XoSTe3HJy547TgaloMo"
-      },
-      "Export": {
-        "Name": "sls-product-service-dev-GetProductByIdLambdaFunctionQualifiedArn"
-      }
-    },
     "CatalogBatchProcessLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
@@ -783,6 +845,15 @@
       },
       "Export": {
         "Name": "sls-product-service-dev-CatalogBatchProcessLambdaFunctionQualifiedArn"
+      }
+    },
+    "GetProductByIdLambdaFunctionQualifiedArn": {
+      "Description": "Current Lambda function version",
+      "Value": {
+        "Ref": "GetProductByIdLambdaVersioncE9hWVQlBvhx3QkgQ9vv1s2XoSTe3HJy547TgaloMo"
+      },
+      "Export": {
+        "Name": "sls-product-service-dev-GetProductByIdLambdaFunctionQualifiedArn"
       }
     },
     "CreateProductLambdaFunctionQualifiedArn": {
