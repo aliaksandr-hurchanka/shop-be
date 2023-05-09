@@ -15,6 +15,13 @@ export default {
           404: 'Products not found',
           500: 'Server error',
         },
+        authorizer: {
+          name: "basicAuthorizer",
+          arn: "arn:aws:lambda:eu-west-1:526744136662:function:authorization-service-dev-basicAuthorizer",
+          type: "token",
+          resultTtlInSeconds: 0,
+          identitySource: "method.request.header.Authorization",
+        },
       },
     },
   ],

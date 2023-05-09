@@ -231,7 +231,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/import-service/dev/1681910334104-2023-04-19T13:18:54.104Z/importProductsFile.zip"
+                "S3Key": "serverless/import-service/dev/1683655743345-2023-05-09T18:09:03.345Z/importProductsFile.zip"
               },
               "Handler": "src/functions/importProductsFile/handler.main",
               "Runtime": "nodejs14.x",
@@ -262,7 +262,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/import-service/dev/1681910334104-2023-04-19T13:18:54.104Z/importFileParser.zip"
+                "S3Key": "serverless/import-service/dev/1683655743345-2023-05-09T18:09:03.345Z/importFileParser.zip"
               },
               "Handler": "src/functions/importFileParser/handler.main",
               "Runtime": "nodejs14.x",
@@ -430,7 +430,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/import-service/dev/1681910334104-2023-04-19T13:18:54.104Z/custom-resources.zip"
+                "S3Key": "serverless/import-service/dev/1683655743345-2023-05-09T18:09:03.345Z/custom-resources.zip"
               },
               "FunctionName": "import-service-dev-custom-resource-existing-s3",
               "Handler": "s3/handler.handler",
@@ -535,7 +535,10 @@
                 "Ref": "ApiGatewayRestApi"
               },
               "ApiKeyRequired": false,
-              "AuthorizationType": "NONE",
+              "AuthorizationType": "CUSTOM",
+              "AuthorizerId": {
+                "Ref": "BasicAuthorizerApiGatewayAuthorizer"
+              },
               "Integration": {
                 "IntegrationHttpMethod": "POST",
                 "Type": "AWS_PROXY",
@@ -569,7 +572,7 @@
               }
             },
             "DependsOn": [
-              "ImportProductsFileLambdaPermissionApiGateway"
+              "BasicAuthorizerApiGatewayAuthorizer"
             ]
           },
           "ApiGatewayImportserviceRequestValidator": {
@@ -583,7 +586,37 @@
               "Name": "import-service-dev | Validate request body and querystring parameters"
             }
           },
-          "ApiGatewayDeployment1681910332737": {
+          "BasicAuthorizerApiGatewayAuthorizer": {
+            "Type": "AWS::ApiGateway::Authorizer",
+            "Properties": {
+              "AuthorizerResultTtlInSeconds": 0,
+              "IdentitySource": "method.request.header.Authorization",
+              "Name": "basicAuthorizer",
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "AuthorizerUri": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":apigateway:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":lambda:path/2015-03-31/functions/",
+                    "arn:aws:lambda:eu-west-1:526744136662:function:authorization-service-dev-basicAuthorizer",
+                    "/invocations"
+                  ]
+                ]
+              },
+              "Type": "TOKEN"
+            }
+          },
+          "ApiGatewayDeployment1683655741149": {
             "Type": "AWS::ApiGateway::Deployment",
             "Properties": {
               "RestApiId": {
@@ -605,6 +638,38 @@
                   "Arn"
                 ]
               },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "ApiGatewayRestApi"
+                    },
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "BasicAuthorizerLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": "arn:aws:lambda:eu-west-1:526744136662:function:authorization-service-dev-basicAuthorizer",
               "Action": "lambda:InvokeFunction",
               "Principal": "apigateway.amazonaws.com",
               "SourceArn": {
@@ -821,6 +886,15 @@
                   "method.request.querystring.name": true
                 }
               },
+              "authorizer": {
+                "type": "token",
+                "name": "basicAuthorizer",
+                "arn": "arn:aws:lambda:eu-west-1:526744136662:function:authorization-service-dev-basicAuthorizer",
+                "managedExternally": false,
+                "resultTtlInSeconds": 0,
+                "identitySource": "method.request.header.Authorization",
+                "claims": []
+              },
               "integration": "AWS_PROXY"
             }
           }
@@ -889,7 +963,7 @@
   },
   "package": {
     "individually": true,
-    "artifactDirectoryName": "serverless/import-service/dev/1681910334104-2023-04-19T13:18:54.104Z",
+    "artifactDirectoryName": "serverless/import-service/dev/1683655743345-2023-05-09T18:09:03.345Z",
     "artifact": ""
   }
 }
