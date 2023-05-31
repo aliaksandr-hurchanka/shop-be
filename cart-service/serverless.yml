@@ -1,0 +1,115 @@
+service: cart-service
+frameworkVersion: '3'
+
+useDotenv: true
+
+plugins:
+  - serverless-offline
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  stage: dev
+  region: eu-west-1
+  environment:
+    PG_HOST: cart-service-dev-postgresqlrdsinstance-5meqpkri3cnc.cwgnpywpdc9k.eu-west-1.rds.amazonaws.com
+    PG_PORT: 5432
+    PG_DATABASE: postgres
+    PG_USER: postgres
+    PG_PASSWORD: amihuh15
+    # GET_PRODUCT_LIST_LAMBDA_ARN: ${env:GET_PRODUCT_LIST_LAMBDA_ARN}
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action: 'lambda:InvokeFunction'
+          Resource: '*'
+        - Effect: Allow
+          Action: 'lambda:InvokeAsync'
+          Resource: '*'
+
+custom:
+  lambdasPath: dist/lambdas/index
+
+functions:
+  main:
+    handler: dist/serverless.handler
+    events:
+      - http:
+          method: ANY
+          path: /
+      - http:
+          method: ANY
+          path: '{proxy+}'
+  createUser:
+    handler: ${self:custom.lambdasPath}.createUser
+    events:
+      - http:
+          method: POST
+          path: user
+  getUser:
+    handler: ${self:custom.lambdasPath}.getUser
+    events:
+      - http:
+          method: GET
+          path: user/{id}
+  getUsers:
+    handler: ${self:custom.lambdasPath}.getUsers
+    events:
+      - http:
+          method: GET
+          path: users
+  getOrder:
+    handler: ${self:custom.lambdasPath}.getOrder
+    events:
+      - http:
+          method: GET
+          path: order/{id}
+  getOrders:
+    handler: ${self:custom.lambdasPath}.getOrders
+    events:
+      - http:
+          method: GET
+          path: orders
+  createOrder:
+    handler: ${self:custom.lambdasPath}.createOrder
+    events:
+      - http:
+          method: POST
+          path: order
+  updateOrder:
+    handler: ${self:custom.lambdasPath}.updateOrder
+    events:
+      - http:
+          method: PATCH
+          path: order/{id}
+  getCarts:
+    handler: ${self:custom.lambdasPath}.getCarts
+    events:
+      - http:
+          method: GET
+          path: carts
+  findUserCart:
+    handler: ${self:custom.lambdasPath}.findUserCart
+    events:
+      - http:
+          method: GET
+          path: cart/{userId}
+  clearUserCart:
+    handler: ${self:custom.lambdasPath}.clearUserCart
+    events:
+      - http:
+          method: DELETE
+          path: cart/{userId}
+  updateUserCart:
+    handler: ${self:custom.lambdasPath}.updateUserCart
+    events:
+      - http:
+          method: PUT
+          path: cart/{userId}
+  checkout:
+    handler: ${self:custom.lambdasPath}.checkout
+    events:
+      - http:
+          method: POST
+          path: cart/checkout/{userId}
